@@ -16,6 +16,7 @@ export default function RootLayout({ children }) {
             <ul>
               <li><Link href="/">Página Inicial</Link></li>
               <li><Link href="/descarte">Como Descartar</Link></li>
+              <li><Link href="/beneficios">Benefícios</Link></li>
               <li><Link href="/contato">Contato</Link></li>
             </ul>
           </nav>
