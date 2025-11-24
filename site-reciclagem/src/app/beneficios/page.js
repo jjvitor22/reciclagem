@@ -77,6 +77,14 @@ export default function BeneficiosPage() {
 
       <p><b>Reciclar lixo eletrônico é um ato simples que gera benefícios enormes para o planeta, a economia e a saúde de todos. Seja parte dessa solução!</b></p>
 
+      <div style={{ marginTop: 32, padding: 16, backgroundColor: "#e8f5e9", borderRadius: 8, textAlign: "center" }}>
+        <h3 style={{ margin: "0 0 8px 0" }}>Explore Outras Categorias de Reciclagem</h3>
+        <p style={{ margin: "0 0 12px 0" }}>Conheça as principais categorias de materiais que podem ser reciclados:</p>
+        <a href="/categorias" style={{ display: "inline-block", padding: "10px 20px", backgroundColor: "#2e7d32", color: "#fff", textDecoration: "none", borderRadius: 6, fontWeight: 500 }}>
+          Ver Categorias →
+        </a>
+      </div>
+
       <div style={{ display: "flex", justifyContent: "center" }}>
         <div style={boxStyle} aria-live="polite">
           <h4 style={{ margin: "0 0 8px 0" }}>Carbon Intensity (UK)</h4>
