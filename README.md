@@ -207,7 +207,177 @@ Esses arquivos servem para reutilizar o cabeçalho e rodapé em outros layouts o
 - Header.js → tem o título e os links de navegação.
 - Footer.js → tem os créditos e o texto final.
 Eles são equivalentes aos blocos de <header> e <footer> dentro do layout.js.
+------------------------------------------------------------------------------------------------------------------------------
+Pagina BeneficiosPage() e Pagina CategoriaPage()
+1. Uso de "use client"
 
+O comando abaixo indica que o componente será renderizado no lado do cliente, permitindo o uso de hooks como useState e useEffect:
+
+"use client"
+
+Isso é essencial para componentes interativos, como requisições API e eventos no navegador.
+
+2. Estados e Efeitos (useState e useEffect)
+
+O componente BeneficiosPage utiliza três estados:
+
+const [ciLoading, setCiLoading] = useState(true)
+const [ciError, setCiError] = useState(null)
+const [ciData, setCiData] = useState(null)
+
+
+Eles controlam:
+carregamento,
+erro,
+dados da API.
+O carregamento da API ocorre no useEffect:
+
+useEffect(() => {
+  fetchCarbonIntensity()
+}, [])
+
+
+O array vazio garante que a função será executada apenas uma vez, quando o componente montar.
+
+3. Função fetchCarbonIntensity()
+
+Essa função faz a requisição à API de intensidade de carbono do Reino Unido:
+
+async function fetchCarbonIntensity() {
+  try {
+    setCiLoading(true)
+    setCiError(null)
+
+    const res = await fetch("https://api.carbonintensity.org.uk/intensity")
+    if (!res.ok) throw new Error(`Status ${res.status}`)
+
+    const json = await res.json()
+    const item = Array.isArray(json.data) && json.data.length > 0 ? json.data[0] : null
+    setCiData(item)
+  } catch (err) {
+    setCiError(err.message || "Erro ao buscar intensidade")
+  } finally {
+    setCiLoading(false)
+  }
+}
+
+
+Essa função garante:
+
+tratamento de erro,
+
+loading,
+
+salvamento do resultado no estado.
+
+4. Renderização Condicional
+
+Dependendo do estado, o componente mostra:
+
+🔸 Carregando:
+{ciLoading && <p>Carregando intensidade...</p>}
+
+🔸 Erro:
+{ciError && (
+  <div style={{ color: "#c00" }}>
+    <p>Erro: {ciError}</p>
+  </div>
+)}
+
+🔸 Dados carregados:
+{!ciLoading && !ciError && ciData && (
+  <div>
+    <p>{new Date(ciData.from).toLocaleString()} → {new Date(ciData.to).toLocaleString()}</p>
+    <p>{ciData.intensity.actual ?? ciData.intensity.forecast} gCO₂/kWh</p>
+    <p>Índice: {ciData.intensity.index}</p>
+  </div>
+)}
+
+
+Esse é um padrão essencial ao trabalhar com APIs em React.
+
+5. Página de Categorias (CategoriasPage)
+
+Essa página lista todas as categorias de reciclagem usando dados importados:
+
+import { categorias } from "./data"
+
+
+Cada item é exibido como um card clicável com:
+
+<Link key={categoria.id} href={`/categorias/${categoria.id}`}>
+  <div> ... </div>
+</Link>
+
+
+O layout usa CSS inline e grid responsivo, criando cartões com efeitos de hover:
+
+display: "grid",
+gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))"
+
+6. Rota Dinâmica de Categoria (CategoriaPage)
+
+A página usa o hook useParams para ler o ID da categoria na URL:
+
+const params = useParams()
+const categoria = getCategoria(params.categoria)
+
+
+Se a categoria não existir:
+
+if (!categoria) {
+  return <h2>Categoria não encontrada</h2>
+}
+
+
+Se existir, exibe:
+
+nome,
+
+descrição,
+
+benefícios,
+
+instruções de descarte.
+
+Trecho principal:
+
+<h2>{categoria.nome}</h2>
+<p>{categoria.descricao}</p>
+
+<h3>Benefícios</h3>
+<ul>
+  {categoria.beneficios.map((b, i) => (
+    <li key={i}>{b}</li>
+  ))}
+</ul>
+
+<h3>Como Descartar</h3>
+<ul>
+  {categoria.comoDescartar.map((c, i) => (
+    <li key={i}>{c}</li>
+  ))}
+</ul>
+
+
+Isso transforma /categorias/[id] em rotas dinâmicas, como:
+
+/categorias/plastico  
+/categorias/vidro  
+/categorias/metais
+
+7. Estilização Inline
+
+O projeto utiliza estilos direto no JSX:
+
+const boxStyle = {
+  border: "1px solid #ddd",
+  padding: 12,
+  borderRadius: 8
+}
+
+
+Isso permite componentes independentes sem necessidade de CSS externo.
 
 Nomes e Ra:  
 João Vitor Gonçalves / 10737592 
